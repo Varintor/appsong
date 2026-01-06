@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebView JS Example</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 4px 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>My Cart</h2>
+
+<div class="item"><span>Apple - $30</span><button onclick="add(30)">Add</button></div>
+<div class="item"><span>Banana - $20</span><button onclick="add(20)">Add</button></div>
+<div class="item"><span>Orange - $25</span><button onclick="add(25)">Add</button></div>
+<div class="item"><span>Milk - $45</span><button onclick="add(45)">Add</button></div>
+<div class="item"><span>Bread - $35</span><button onclick="add(35)">Add</button></div>
+
+<h3>Cart</h3>
+<p>Total: $<span id="total">0</span></p>
+
+<button onclick="sendTotalToFlutter()">Send Total to Flutter</button>
+
+<script>
+  let total = 0;
+
+  function add(price) {
+    total += price;
+    document.getElementById("total").innerText = total;
+  }
+
+  function sendTotalToFlutter() {
+    FlutterChannel.postMessage(total.toString());
+  }
+
+  function updateTotalFromFlutter(newTotal) {
+    total = newTotal;
+    document.getElementById("total").innerText = total;
+  }
+</script>
+
+</body>
+</html>

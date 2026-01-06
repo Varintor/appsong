@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'pages/challenge1_page.dart';
+import 'pages/challenge2_page.dart';
+import 'pages/challenge3_page.dart';
+import 'widgets/animated_bottom_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,40 +13,52 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomeWithBar(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class HomeWithBar extends StatefulWidget {
+  const HomeWithBar({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomeWithBar> createState() => _HomeWithBarState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  late final WebViewController _controller;
+class _HomeWithBarState extends State<HomeWithBar> {
+  int currentIndex = 0;
+  final PageController _pageController = PageController();
 
-  void initState() {
-    super.initState();
-    _controller = WebViewController();
-    // _controller.loadRequest(Uri.parse("https://flutter.dev/"));
-    _controller.loadFlutterAsset('assets/index.html');
+  void onTabTap(int index) {
+    setState(() => currentIndex = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("WebView Flutter"),),
-      body: WebViewWidget(controller: _controller),// This trailing comma makes auto-formatting nicer for build methods.
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        onPageChanged: (index) {
+          setState(() => currentIndex = index);
+        },
+        children: const [
+          Challenge1Page(),
+          Challenge2Page(),
+          Challenge3Page(),
+        ],
+      ),
+      bottomNavigationBar: AnimatedBottomBar(
+        currentIndex: currentIndex,
+        onTap: onTabTap,
+      ),
     );
   }
 }

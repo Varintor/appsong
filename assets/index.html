@@ -1,10 +1,83 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebView Asset</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    
+    .gif-container {
+      margin: 20px 0;
+      min-height: 250px;
+    }
+
+    
+    .gif-container img {
+      max-width: 100%;
+      width: 90%;
+      border-radius: 12px;
+      display: none; 
+    }
+
+    
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 20px;
+      background-color: #2196f3;
+      color: white;
+    }
+
+    button:active {
+      opacity: 0.8;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Hello from Asset HTML</h1>
+
+  <h1>Hello from varintorn !</h1>
   <p>This HTML is loaded from Flutter assets.</p>
+
+
+  <div class="gif-container">
+    <img id="gif1" src="blah.gif">
+    <img id="gif2" src="rezelaugh.gif">
+  </div>
+
+
+  <div class="button-row">
+    <button onclick="showGif(1)">click</button>
+    <button onclick="showGif(2)">Button</button>
+  </div>
+
+  <script>
+    function showGif(number) {
+      
+      document.getElementById("gif1").style.display = "none";
+      document.getElementById("gif2").style.display = "none";
+
+      
+      document.getElementById("gif" + number).style.display = "block";
+    }
+  </script>
+
 </body>
 </html>
