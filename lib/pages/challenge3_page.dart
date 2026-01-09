@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class Challenge3Page extends StatefulWidget {
-  const Challenge3Page({super.key});
-
+  const Challenge3Page({super.key, required this.onWebViewCreated});
+  final Function(WebViewController) onWebViewCreated;
   @override
   State<Challenge3Page> createState() => _Challenge3PageState();
 }
@@ -27,6 +27,8 @@ class _Challenge3PageState extends State<Challenge3Page> {
         },
       )
       ..loadFlutterAsset('assets/webview.html');
+  widget.onWebViewCreated(_controller);
+
   }
 
   @override

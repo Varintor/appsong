@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class Challenge2Page extends StatefulWidget {
-  const Challenge2Page({super.key});
+  final Function(WebViewController) onWebViewCreated;
+
+  const Challenge2Page({
+    super.key,
+    required this.onWebViewCreated,
+  });
 
   @override
   State<Challenge2Page> createState() => _Challenge2PageState();
@@ -20,13 +25,10 @@ class _Challenge2PageState extends State<Challenge2Page> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageStarted: (url) {
-            setState(() => isLoading = true);
-          },
-          onPageFinished: (url) {
-            setState(() => isLoading = false);
-          },
+          onPageStarted: (_) => setState(() => isLoading = true),
+          onPageFinished: (_) => setState(() => isLoading = false),
           onNavigationRequest: (request) {
+            // (Challenge 2 requirement)
             if (request.url.startsWith('https://docs.flutter.dev')) {
               return NavigationDecision.navigate;
             }
@@ -35,47 +37,20 @@ class _Challenge2PageState extends State<Challenge2Page> {
         ),
       )
       ..loadRequest(Uri.parse('https://docs.flutter.dev'));
+
+    widget.onWebViewCreated(_controller);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Challenge 2 - Navigation'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () async {
-              if (await _controller.canGoBack()) {
-                _controller.goBack();
-              }
-            },
+    return Stack(
+      children: [
+        WebViewWidget(controller: _controller),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
           ),
-          IconButton(
-            icon: const Icon(Icons.arrow_forward),
-            onPressed: () async {
-              if (await _controller.canGoForward()) {
-                _controller.goForward();
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              _controller.reload();
-            },
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          WebViewWidget(controller: _controller),
-          if (isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
-        ],
-      ),
+      ],
     );
   }
 }
