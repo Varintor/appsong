@@ -1,10 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WebView Asset</title>
+  <meta charset="UTF-8">
+  <title>WebView Multi Content</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 16px;
+      background: #f2f2f2;
+    }
+    .card {
+      background: white;
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello from Asset HTML</h1>
-  <p>This HTML is loaded from Flutter assets.</p>
+
+  <!-- SECTION 1 : HTML ธรรมดา -->
+  <div class="card">
+    <h2>Hello HTML</h2>
+    <h3>Hello from Phone</h3>
+    <p>This is local index.html</p>
+  </div>
+
+  <!-- SECTION 2 : Local content -->
+  <div class="card">
+    <h2>Read Local HTML file</h2>
+    <p>This content is loaded from Flutter assets</p>
+  </div>
+
+  <!-- SECTION 3 : Web (เหมือนรูป) -->
+  <div class="card">
+    <h2>Flutter Website</h2>
+    <iframe
+      src="https://docs.flutter.dev"
+      width="100%"
+      height="400"
+      style="border:none;">
+    </iframe>
+  </div>
+
 </body>
 </html>

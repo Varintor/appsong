@@ -11,19 +11,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -31,6 +26,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late final WebViewController _controller;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -41,31 +37,33 @@ class _MyHomePageState extends State<MyHomePage> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {
-            print("Page started loading: $url");
+            setState(() => isLoading = true);
           },
           onPageFinished: (url) {
-            print("Page finished loading: $url");
+            setState(() => isLoading = false);
           },
           onNavigationRequest: (request) {
-            if (request.url.startsWith("https://flutter.dev")) {
+            // อนุญาตเฉพาะ docs.flutter.dev
+            if (request.url.startsWith('https://docs.flutter.dev')) {
               return NavigationDecision.navigate;
             }
-            print("Blocked navigation to: ${request.url}");
+            debugPrint('Blocked navigation to ${request.url}');
             return NavigationDecision.prevent;
           },
         ),
       )
-      ..loadRequest(Uri.parse("https://flutter.dev"));
+      // 🔥 โหลด "หน้าแม่" หน้าเดียว (Local HTML)
+      ..loadFlutterAsset('assets/index.html');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("WebView Navigation & events"),
+        title: const Text('WebView3'),
         actions: [
           IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () async {
               if (await _controller.canGoBack()) {
                 _controller.goBack();
@@ -73,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.arrow_forward),
+            icon: const Icon(Icons.arrow_forward),
             onPressed: () async {
               if (await _controller.canGoForward()) {
                 _controller.goForward();
@@ -81,12 +79,22 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () => _controller.reload(),
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              _controller.reload();
+            },
           ),
         ],
       ),
-      body: WebViewWidget(controller: _controller),
+      body: Stack(
+        children: [
+          WebViewWidget(controller: _controller),
+          if (isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
     );
   }
 }
